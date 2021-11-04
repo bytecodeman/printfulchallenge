@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Homework;
 
+include ("Cache.php");
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+
 
 class Application
 {
@@ -18,7 +21,8 @@ class Application
 
     public function run(): void
     {
-        $results = null;
+        $cache = new Cache();
+        $results = $cache->set("Tony", "Silvestri", 33); //null;
         if (!empty($_POST)) {
             $json = $this->convertPOST2JSON($_POST);
             $client = new Client();
