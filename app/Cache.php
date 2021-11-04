@@ -1,4 +1,6 @@
 <?php
+// Tony Silvestri
+// 11/4/21
 
 declare(strict_types=1);
 
@@ -10,8 +12,27 @@ class Cache implements CacheInterface {
 
     private $cacheFilename = "cachefile.txt";
 
+    private function file_get_contents_locking($filename) {
+        $file = fopen($filename, 'rb');
+        if ($file === false) {
+            return false;
+        }
+        $lock = flock($file, LOCK_SH);
+        if (!$lock) {
+            fclose($file);
+            return false;
+        }
+        $string = '';
+        while (!feof($file)) {
+            $string .= fread($file, 8192);
+        }
+        flock($file, LOCK_UN);
+        fclose($file);
+        return $string;
+    }
+
     private function getCacheData() {
-        if (($data = @file_get_contents($this->cacheFilename)) === false) {
+        if (($data = $this->file_get_contents_locking($this->cacheFilename)) === false) {
             $data = "";
         }
         return $data;        
@@ -27,7 +48,7 @@ class Cache implements CacheInterface {
         $pattern = "/^($pattern):.*(?:\n)/m";
         $data = preg_replace($pattern, "", $data);
         $data .= $key . ":" . strval((time() + $duration)) . ":" . $value . "\n";
-        file_put_contents($this->cacheFilename, $data);
+        file_put_contents($this->cacheFilename, $data, LOCK_EX);
     }
 
     public function get(string $key) {

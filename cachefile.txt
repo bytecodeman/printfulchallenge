@@ -1,2 +1,1 @@
-Mary:1636032200:dfsdsd
-Tony:1636033695:Silvestri
+91311?2=5?202=1:1636054360:{"code":200,"result":[{"id":"STANDARD","name":"Flat Rate (Estimated delivery: Nov 12⁠–17) ","rate":"11.58","currency":"USD","minDeliveryDays":4,"maxDeliveryDays":7}],"extra":[]}
